@@ -1,7 +1,7 @@
 import {WebSocketServer, WebSocket } from "ws";
 console.log("relayer Server is starting...");
 
-const wss = new WebSocketServer({port : 8081});
+const wss = new WebSocketServer({port : 3001});
 
 const Servers = [];
 // wss.on("connection",(socket)=>{
@@ -17,7 +17,8 @@ const Servers = [];
 //         })
 //     });
 // })
-//Better Architecture for relaying messages between Servers we can directly send the message to the relayer server and it will relay the message to all connected servers and therefore to all clients in the room.
+//Better Architecture for relaying messages between Servers we can directly send the chat message to the relayer server and it will relay the message to all connected servers and therefore to all clients in the room.
+//2
 wss.on("connection",(socket)=>{
     socket.on("error", (error) => {
         console.error('WebSocket error:', error);
@@ -25,8 +26,9 @@ wss.on("connection",(socket)=>{
     Servers.push(socket);
     console.log("Server connected");
     socket.on("message", (message) => {
+         const msgText = message.toString();
         Servers.map((s) => {
-            s.send(message.toString());
+            s.send(msgText);
             console.log("Message relayed to other servers");
         })
     });
